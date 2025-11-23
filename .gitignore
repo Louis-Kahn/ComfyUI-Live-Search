@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+api_config.json
+.DS_Store
+.vscode/
+.idea/
+venv/
+.specstory/
