@@ -166,8 +166,7 @@ class LiveSearchNode:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "prompt": ("STRING", {"multiline": True, "dynamicPrompts": False, "placeholder": "e.g., What is the weather in Tokyo right now? or just 35.6762, 139.6503"}),
-                "mode": (["Normal Search", "Weather/Time Mode"], {"default": "Normal Search"}),
+                "prompt": ("STRING", {"multiline": True, "dynamicPrompts": False, "placeholder": "e.g., 北京现在的天气 / What is the weather in Tokyo?"}),
                 "optimize_prompt": ("BOOLEAN", {"default": False, "label_on": "Optimize ON", "label_off": "Optimize OFF"}),
                 "search_engine": (["DuckDuckGo", "Google"], {"default": "DuckDuckGo"}),
                 "provider": ([
@@ -193,7 +192,7 @@ class LiveSearchNode:
     FUNCTION = "process_search"
     CATEGORY = "LiveSearch"
 
-    def process_search(self, prompt, mode, optimize_prompt, search_engine, provider, model, num_results, api_key, custom_base_url, proxy):
+    def process_search(self, prompt, optimize_prompt, search_engine, provider, model, num_results, api_key, custom_base_url, proxy):
         # 1. Resolve Proxy
         valid_proxy = proxy.strip() if proxy and proxy.strip() else None
         
@@ -233,29 +232,33 @@ class LiveSearchNode:
         
         # 2. Determine Search Query
         search_query = prompt
-        optimized_prompt_output = ""  # Track optimized prompt for output
-        
-        # Apply mode-specific query modification
-        if mode == "Weather/Time Mode":
-            search_query = f"current time and weather at location {prompt}"
-            optimized_prompt_output = f"[Mode Modified] {search_query}"
+        optimized_prompt_output = "No optimization (using original prompt)"
         
         # Apply prompt optimization if enabled
         if optimize_prompt:
             refine_messages = [
-                {"role": "system", "content": "You are a search engine expert. Convert the user's input into the single best search query to find the answer. Return ONLY the query, no quotes."},
-                {"role": "user", "content": search_query}
+                {"role": "system", "content": """You are a search engine expert. Convert the user's input into the best search query.
+Rules:
+1. Keep the same language as the input (Chinese→Chinese, English→English)
+2. Remove unnecessary words, keep key information
+3. For weather/time queries, preserve location and time context
+4. Return ONLY the optimized query, no quotes or explanations
+
+Examples:
+- "北京现在的天气和时间" → "北京 实时天气 当前时间"
+- "What's the weather in Tokyo?" → "Tokyo weather now"
+- "外面冷吗" → "当地天气 温度"
+- "Who won the Super Bowl?" → "Super Bowl winner latest"
+"""},
+                {"role": "user", "content": prompt}
             ]
             refined_query = LLMClient.chat_completion(resolved_api_key, base_url, final_model, refine_messages, proxy=valid_proxy)
             if not refined_query.startswith("Error"):
-                print(f"[LiveSearch] Prompt optimized: {search_query} -> {refined_query}")
+                print(f"[LiveSearch] Prompt optimized: {prompt} -> {refined_query}")
                 optimized_prompt_output = f"Original: {prompt}\nOptimized: {refined_query}"
                 search_query = refined_query
             else:
                 optimized_prompt_output = f"Optimization failed: {refined_query}"
-        else:
-            if not optimized_prompt_output:
-                optimized_prompt_output = f"No optimization (using original prompt)"
 
         # 3. Perform Search
         print(f"[LiveSearch] Searching for: {search_query} using {search_engine}")
@@ -288,10 +291,12 @@ class LiveSearchNode:
         full_context = "\n".join(context_data)
 
         # 5. Generate Answer
-        system_prompt = "You are a helpful assistant with access to real-time web search results. Answer the user's original prompt based ONLY on the provided search results. If the results contain time or weather info, be precise."
-        
-        if mode == "Weather/Time Mode":
-            system_prompt += " The user specifically wants to know the local time and weather conditions."
+        system_prompt = """You are a helpful assistant with access to real-time web search results. 
+Rules:
+1. Answer in the SAME LANGUAGE as the user's question
+2. Base your answer ONLY on the provided search results
+3. If results contain time/weather info, be precise with numbers and units
+4. Keep the answer concise and well-structured"""
 
         final_messages = [
             {"role": "system", "content": system_prompt},

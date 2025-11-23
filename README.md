@@ -82,9 +82,8 @@ Then restart ComfyUI.
 
 | Parameter | Description |
 | :--- | :--- |
-| **prompt** | Your query or location. e.g., *"What is the price of Bitcoin?"* or *"35.68, 139.76"* |
-| **mode** | • `Normal Search`: Standard search mode.<br>• `Weather/Time Mode`: Optimized for weather/time queries with auto-prefix. |
-| **optimize_prompt** | Prompt optimization toggle. When enabled, LLM rewrites your query into better search keywords.<br>• OFF (default): Use original input<br>• ON: LLM optimizes, outputs comparison |
+| **prompt** | Your question. Supports both Chinese and English. e.g., *"北京现在的天气"* or *"Who won the Super Bowl?"* |
+| **optimize_prompt** | 🔄 Prompt Optimization Toggle (Recommended ON)<br>• **OFF** (default): Use original input directly<br>• **ON**: LLM optimizes your question into precise search keywords<br>  - Preserves original language (CN→CN, EN→EN)<br>  - Removes redundant words, keeps core info<br>  - Outputs before/after comparison |
 | **search_engine** | • `DuckDuckGo`: Recommended for stability.<br>• `Google`: Alternative option. |
 | **provider** | Choose your LLM provider: `OpenAI`, `DeepSeek (Official/Aliyun/Volcengine)`, `Gemini`, etc. |
 | **model** | The model name (e.g., `gpt-4o-mini`, `deepseek-chat`, `deepseek-r1`). |
@@ -101,16 +100,24 @@ Then restart ComfyUI.
 
 #### Example Workflows
 
-**1. The Weather Reporter**
-- **Input**: `34.05, -118.24` (Los Angeles)
-- **Mode**: `Weather/Time Mode`
-- **Output**: "It is currently 2:00 PM in Los Angeles, Sunny, 25°C." -> [Text to Image Node] -> Generates a sunny LA street.
+**1. Real-time Weather Image Generation**
+- **Input**: `"What's the weather in Tokyo?"`
+- **Optimize**: `ON` ✅
+- **Optimized**: `"Tokyo weather now"`
+- **Output**: "Currently 2:00 PM in Tokyo, Sunny, 15°C."
+- → [Connect to Text2Image] → Generate Tokyo sunny street scene
 
-**2. The Fact Checker**
-- **Input**: "Who won the latest Super Bowl?"
-- **Mode**: `Smart Search`
+**2. Fact Checking**
+- **Input**: `"Who won the latest Super Bowl?"`
+- **Optimize**: `ON` ✅
 - **Search Engine**: `DuckDuckGo`
-- **Output**: Provides the latest winner based on real-time search results.
+- **Output**: Accurate answer based on real-time results
+
+**3. Chinese Query**
+- **Input**: `"北京现在的天气"`
+- **Optimize**: `ON` ✅
+- **Optimized**: `"北京 实时天气 当前时间"`
+- **Output**: Beijing real-time weather info (in Chinese)
 
 ## ⚙️ Configuration (Optional)
 
