@@ -84,7 +84,7 @@ Then restart ComfyUI.
 | :--- | :--- |
 | **prompt** | Your question. Supports both Chinese and English. e.g., *"北京现在的天气"* or *"Who won the Super Bowl?"* |
 | **optimize_prompt** | 🔄 Prompt Optimization Toggle (Recommended ON)<br>• **OFF** (default): Use original input directly<br>• **ON**: LLM optimizes your question into precise search keywords<br>  - Preserves original language (CN→CN, EN→EN)<br>  - Removes redundant words, keeps core info<br>  - Outputs before/after comparison |
-| **search_engine** | • `DuckDuckGo`: Recommended for stability.<br>• `Google`: Alternative option. |
+| **search_engine** | 🔍 **DuckDuckGo** (Only Option)<br>• Stable and automation-friendly<br>• Works reliably with proxies<br>• High-quality search results |
 | **provider** | Choose your LLM provider: `OpenAI`, `DeepSeek (Official/Aliyun/Volcengine)`, `Gemini`, etc. |
 | **model** | The model name (e.g., `gpt-4o-mini`, `deepseek-chat`, `deepseek-r1`). |
 | **api_key** | (Optional) Your API Key. If left empty, it tries to load from `api_config.json`. |
@@ -110,7 +110,6 @@ Then restart ComfyUI.
 **2. Fact Checking**
 - **Input**: `"Who won the latest Super Bowl?"`
 - **Optimize**: `ON` ✅
-- **Search Engine**: `DuckDuckGo`
 - **Output**: Accurate answer based on real-time results
 
 **3. Chinese Query**
@@ -119,18 +118,65 @@ Then restart ComfyUI.
 - **Optimized**: `"北京 实时天气 当前时间"`
 - **Output**: Beijing real-time weather info (in Chinese)
 
+## 🔍 Why Only DuckDuckGo?
+
+This node uses **real web scraping** for search, not API calls. In our testing:
+
+**✅ DuckDuckGo Advantages**:
+- Automation-friendly with lenient anti-bot measures
+- Works reliably even with proxy configuration
+- Search quality fully meets real-time information retrieval needs
+- Open-source friendly with strong community support
+
+**❌ Google Issues**:
+- Extremely strict anti-scraping mechanisms (CAPTCHAs, IP blocks, User-Agent detection)
+- Often returns empty results or CAPTCHA pages even with proxies
+- `googlesearch-python` library is unstable in production
+- Frequent access leads to temporary IP bans
+
+**💡 If You Need Google Search Quality**:
+- Consider using official **Google Custom Search API** (paid)
+- Or use third-party services like **SerpAPI** (paid)
+
+We chose DuckDuckGo to ensure the node works **reliably** across all environments.
+
+---
+
 ## ⚙️ Configuration (Optional)
 
-For local users who don't want to paste their API key every time:
+For local users who don't want to paste their API key every time, there are two configuration methods:
 
-94|1. Rename `api_config_example.json` to `api_config.json` in the root directory.
-95|2. Edit `api_config.json` and fill in your API keys:
+### Method 1: Use .env File (Recommended) ⭐
+
+1. Copy `.env.example` to `.env`
+2. Edit `.env` and fill in your API keys:
+
+```bash
+OPENAI_API_KEY=sk-your-openai-key-here
+DEEPSEEK_OFFICIAL_API_KEY=sk-your-deepseek-key-here
+```
+
+**Advantages**:
+- ✅ Industry standard practice
+- ✅ Automatically excluded by `.gitignore`, won't be accidentally committed
+- ✅ More secure and professional
+
+### Method 2: Use api_config.json
+
+1. Rename `api_config_example.json` to `api_config.json`
+2. Edit and fill in your API keys:
 
 ```json
 {
     "openai_api_key": "sk-...",
     "deepseek (official)_api_key": "sk-..."
 }
+```
+
+### API Key Priority
+
+```
+Node Input (Highest) > .env File > api_config.json (Lowest)
 ```
 
 > **Note**: On cloud platforms, always use the `api_key` widget in the node for security.

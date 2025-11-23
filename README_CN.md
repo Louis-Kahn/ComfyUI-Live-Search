@@ -84,7 +84,7 @@ pip install -r requirements.txt
 | :--- | :--- |
 | **prompt** | 你的问题。支持中英文。例如 *"北京现在的天气"* 或 *"Who won the Super Bowl?"* |
 | **optimize_prompt** | 🔄 提示词优化开关（推荐开启）<br>• **关闭**（默认）：直接使用原始输入搜索<br>• **开启**：LLM 将问题优化为更精准的搜索关键词<br>  - 保持原语言（中文→中文，英文→英文）<br>  - 去除冗余词汇，保留核心信息<br>  - 输出优化前后对比 |
-| **search_engine** | • `DuckDuckGo`: 推荐，更稳定。<br>• `Google`: 备选方案。 |
+| **search_engine** | 🔍 **DuckDuckGo**（唯一选项）<br>• 稳定可靠，对自动化访问友好<br>• 无需额外配置即可工作<br>• 搜索质量完全满足需求 |
 | **provider** | 选择 LLM 提供商：支持 `OpenAI`, `DeepSeek (官方/阿里云/火山)`, `Gemini` 等。 |
 | **model** | 模型名称（如 `gpt-4o-mini`, `deepseek-chat`, `deepseek-r1`）。 |
 | **api_key** | （可选）你的 API Key。留空则尝试读取配置文件。 |
@@ -110,7 +110,6 @@ pip install -r requirements.txt
 **2. 事实查询**
 - **输入**: `"最新的奥斯卡最佳影片"`
 - **优化开关**: `开启` ✅
-- **搜索引擎**: `DuckDuckGo`
 - **输出**: 基于实时搜索结果的准确回答
 
 **3. 英文查询**
@@ -119,18 +118,65 @@ pip install -r requirements.txt
 - **优化结果**: `"Tokyo weather now"`
 - **输出**: 东京实时天气信息（英文回答）
 
+## 🔍 为什么只支持 DuckDuckGo？
+
+本节点使用**真实的网页爬虫**进行搜索，而非 API 调用。在实际测试中：
+
+**✅ DuckDuckGo 的优势**：
+- 对自动化访问友好，反爬虫机制相对宽松
+- 即使配置代理也能稳定工作
+- 搜索质量完全满足实时信息检索需求
+- 开源友好，社区支持良好
+
+**❌ Google 的问题**：
+- 极其严格的反爬虫机制（验证码、IP 封锁、User-Agent 检测）
+- 即使挂代理也经常返回空结果或验证码页面
+- `googlesearch-python` 库在生产环境中不稳定
+- 频繁访问会导致 IP 被暂时封禁
+
+**💡 如果需要 Google 搜索质量**：
+- 可以考虑使用官方的 **Google Custom Search API**（需付费）
+- 或者使用 **SerpAPI** 等第三方服务（需付费）
+
+我们选择 DuckDuckGo 是为了确保节点在各种环境下都能**稳定可靠**地工作。
+
+---
+
 ## ⚙️ 高级配置（可选）
 
-如果你是在本地电脑使用，不想每次都复制粘贴 API Key，可以配置 `api_config.json`：
+如果你是在本地电脑使用，不想每次都复制粘贴 API Key，有两种配置方式：
 
-94|1. 将项目根目录下的 `api_config_example.json` 重命名为 `api_config.json`。
-95|2. 编辑 `api_config.json`：
+### 方式一：使用 .env 文件（推荐）⭐
+
+1. 将 `.env.example` 复制为 `.env`
+2. 编辑 `.env` 文件并填入你的 API keys：
+
+```bash
+OPENAI_API_KEY=sk-your-openai-key-here
+DEEPSEEK_OFFICIAL_API_KEY=sk-your-deepseek-key-here
+```
+
+**优势**：
+- ✅ 符合业界标准实践
+- ✅ 自动被 `.gitignore` 排除，不会意外提交到 Git
+- ✅ 更安全，更专业
+
+### 方式二：使用 api_config.json
+
+1. 将 `api_config_example.json` 重命名为 `api_config.json`
+2. 编辑并填入你的 API keys：
 
 ```json
 {
     "openai_api_key": "sk-...",
     "deepseek (official)_api_key": "sk-..."
 }
+```
+
+### API Key 优先级
+
+```
+节点输入框 (最高) > .env 文件 > api_config.json (最低)
 ```
 
 > **注意**：在云端平台使用时，请务必直接在节点输入框填写 Key，以保证安全。

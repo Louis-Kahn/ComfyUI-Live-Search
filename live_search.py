@@ -2,7 +2,6 @@ import os
 import json
 import requests
 from bs4 import BeautifulSoup
-from googlesearch import search as google_search
 try:
     from ddgs import DDGS
 except ImportError:
@@ -13,45 +12,6 @@ from .config_manager import ConfigManager
 config_manager = ConfigManager()
 
 class SearchTool:
-    @staticmethod
-    def search_google(query, num_results=3, proxy=None):
-        """
-        Performs a Google search and returns a list of dicts consistent with DDG format.
-        """
-        try:
-            # google_search doesn't directly support proxy argument easily in all versions,
-            # but relies on environment variables usually.
-            # We can try setting env vars temporarily if proxy is provided.
-            original_http = os.environ.get('http_proxy')
-            original_https = os.environ.get('https_proxy')
-            
-            if proxy:
-                os.environ['http_proxy'] = proxy
-                os.environ['https_proxy'] = proxy
-            
-            # googlesearch-python generator
-            results = list(google_search(query, num_results=num_results, advanced=True))
-            
-            # Restore env vars
-            if proxy:
-                if original_http: os.environ['http_proxy'] = original_http
-                else: del os.environ['http_proxy']
-                if original_https: os.environ['https_proxy'] = original_https
-                else: del os.environ['https_proxy']
-
-            # Normalize to list of dicts: {'title', 'url', 'summary'}
-            normalized_results = []
-            for res in results:
-                normalized_results.append({
-                    'title': res.title,
-                    'url': res.url,
-                    'summary': res.description
-                })
-            return normalized_results
-        except Exception as e:
-            print(f"[LiveSearch] Google Search error: {e}")
-            return []
-
     @staticmethod
     def search_duckduckgo(query, num_results=3, proxy=None):
         """
@@ -168,7 +128,6 @@ class LiveSearchNode:
             "required": {
                 "prompt": ("STRING", {"multiline": True, "dynamicPrompts": False, "placeholder": "e.g., 北京现在的天气 / What is the weather in Tokyo?"}),
                 "optimize_prompt": ("BOOLEAN", {"default": False, "label_on": "Optimize ON", "label_off": "Optimize OFF"}),
-                "search_engine": (["DuckDuckGo", "Google"], {"default": "DuckDuckGo"}),
                 "provider": ([
                     "OpenAI", 
                     "DeepSeek (Official)", 
@@ -192,7 +151,7 @@ class LiveSearchNode:
     FUNCTION = "process_search"
     CATEGORY = "LiveSearch"
 
-    def process_search(self, prompt, optimize_prompt, search_engine, provider, model, num_results, api_key, custom_base_url, proxy):
+    def process_search(self, prompt, optimize_prompt, provider, model, num_results, api_key, custom_base_url, proxy):
         # 1. Resolve Proxy
         valid_proxy = proxy.strip() if proxy and proxy.strip() else None
         
@@ -261,15 +220,12 @@ Examples:
                 optimized_prompt_output = f"Optimization failed: {refined_query}"
 
         # 3. Perform Search
-        print(f"[LiveSearch] Searching for: {search_query} using {search_engine}")
+        print(f"[LiveSearch] Searching for: {search_query} using DuckDuckGo")
         
-        if search_engine == "Google":
-            search_results = SearchTool.search_google(search_query, num_results, proxy=valid_proxy)
-        else:
-            search_results = SearchTool.search_duckduckgo(search_query, num_results, proxy=valid_proxy)
+        search_results = SearchTool.search_duckduckgo(search_query, num_results, proxy=valid_proxy)
         
         if not search_results:
-            return (f"No search results found using {search_engine}.", "", optimized_prompt_output)
+            return (f"No search results found using DuckDuckGo.", "", optimized_prompt_output)
 
         # 4. Extract Content
         context_data = []

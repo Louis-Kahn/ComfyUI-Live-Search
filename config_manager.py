@@ -1,5 +1,10 @@
 import os
 import json
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # Load .env file from project root
+except ImportError:
+    pass  # python-dotenv not installed, skip
 
 class ConfigManager:
     def __init__(self):
@@ -26,13 +31,22 @@ class ConfigManager:
 
     def get_api_key(self, provider_name, node_input_key=None):
         """
-        Helper to get API key from input (priority) or config file
+        Helper to get API key with priority:
+        1. Node input (highest priority)
+        2. Environment variable (.env file)
+        3. Config file (api_config.json)
         """
         # 1. Check if provided directly in node input
         if node_input_key and isinstance(node_input_key, str) and node_input_key.strip():
             return node_input_key.strip()
         
-        # 2. Check config file
+        # 2. Check environment variable
+        env_key_name = f"{provider_name.upper().replace(' ', '_').replace('(', '').replace(')', '')}_API_KEY"
+        env_value = os.getenv(env_key_name)
+        if env_value:
+            return env_value.strip()
+        
+        # 3. Check config file
         config = self.get_config()
         key_name = f"{provider_name.lower()}_api_key"
         return config.get(key_name, "")

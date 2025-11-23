@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 api_config.json
+.env
 .DS_Store
 .vscode/
 .idea/
