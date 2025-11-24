@@ -17,7 +17,7 @@ class LiveSearch_Settings:
         return {
             "required": {
                 "num_results": ("INT", {"default": 3, "min": 1, "max": 10, "step": 1}),
-                "output_language": (["Auto", "Chinese", "English"], {"default": "Auto"}),
+                "output_language": (["Auto (跟随输入)", "中文", "English"], {"default": "Auto (跟随输入)"}),
                 "optimize_prompt": ("BOOLEAN", {"default": False, "label_on": "Optimize ON", "label_off": "Optimize OFF"}),
             },
             "optional": {

@@ -1,3 +1,4 @@
+import os
 from .live_search import LiveSearchNode
 from .api_loader import LiveSearch_API_Loader
 from .search_settings import LiveSearch_Settings
@@ -17,5 +18,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "LiveSearch_Agent": "🌐 Live Search Agent",
 }
 
-__all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
+# Web directory for frontend extensions
+WEB_DIRECTORY = "./web"
+
+__all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS", "WEB_DIRECTORY"]
 

@@ -113,7 +113,7 @@ Then restart ComfyUI.
 | Parameter | Description |
 | :--- | :--- |
 | **prompt** | Your question. Supports both Chinese and English. e.g., *"北京现在的天气"* or *"Who won the Super Bowl?"* |
-| **output_language** | 🌐 Output Language<br>• **Auto** (default): Automatically matches question language<br>• **Chinese**: Force Chinese output<br>• **English**: Force English output |
+| **output_language** | 🌐 Output Language<br>• **Auto (跟随输入)** (default): Automatically matches question language<br>• **中文**: Force Chinese output<br>• **English**: Force English output |
 | **optimize_prompt** | 🔄 Prompt Optimization Toggle (Recommended ON)<br>• **OFF** (default): Use original input directly<br>• **ON**: LLM optimizes your question into precise search keywords<br>  - Preserves original language (CN→CN, EN→EN)<br>  - Removes redundant words, keeps core info<br>  - Outputs before/after comparison |
 | **search_engine** | 🔍 **DuckDuckGo** (Only Option)<br>• Stable and automation-friendly<br>• Works reliably with proxies<br>• High-quality search results |
 | **provider** | Choose your LLM provider: `OpenAI`, `DeepSeek (Official/Aliyun/Volcengine)`, `Gemini`, etc. |
@@ -132,11 +132,11 @@ Then restart ComfyUI.
 #### Example Workflows
 
 **1. Real-time Weather Image Generation**
-- **Input**: `"What's the weather in Tokyo?"`
+- **Input**: `"What's the weather in Beijing?"`
 - **Optimize**: `ON` ✅
-- **Optimized**: `"Tokyo weather now"`
-- **Output**: "Currently 2:00 PM in Tokyo, Sunny, 15°C."
-- → [Connect to Text2Image] → Generate Tokyo sunny street scene
+- **Optimized**: `"Beijing weather now"`
+- **Output**: "Currently 2:00 PM in Beijing, Sunny, 15°C."
+- → [Connect to Text2Image] → Generate Beijing sunny street scene
 
 **2. Fact Checking**
 - **Input**: `"Who won the latest Super Bowl?"`
@@ -150,9 +150,9 @@ Then restart ComfyUI.
 - **Output**: Beijing weather info (**answered in English**)
 
 **4. International Collaboration**
-- **Input**: `"What's the weather in Tokyo?"` (English question)
-- **Output Language**: `Chinese` 🇨🇳
-- **Output**: Tokyo weather info (**answered in Chinese**)
+- **Input**: `"What's the weather in Beijing?"` (English question)
+- **Output Language**: `中文` 🇨🇳
+- **Output**: Beijing weather info (**answered in Chinese**)
 
 ## 🔍 Why Only DuckDuckGo?
 
