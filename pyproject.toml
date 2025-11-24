@@ -1,0 +1,42 @@
+[project]
+name = "comfyui-live-search"
+description = "Real-time web search and AI summarization for ComfyUI. Supports DuckDuckGo with multiple LLM providers (DeepSeek, OpenAI, Gemini, Anthropic, Grok, Qwen, Ollama, etc.). 实时联网搜索与AI总结节点,支持多种LLM提供商。"
+version = "1.0.0"
+license = { file = "LICENSE" }
+dependencies = [
+    "requests>=2.25.0",
+    "beautifulsoup4>=4.9.0",
+    "ddgs>=9.0.0",
+    "python-dotenv>=1.0.0"
+]
+
+[project.urls]
+Repository = "https://github.com/Louis-Kahn/ComfyUI-Live-Search"
+Documentation = "https://github.com/Louis-Kahn/ComfyUI-Live-Search#readme"
+
+[tool.comfy]
+PublisherId = ""  # TODO: 填入你在 Comfy Registry 上的 Publisher ID
+DisplayName = "Live Search Agent"
+Icon = ""  # 可选: 添加图标链接 (SVG, PNG, JPG or GIF, MAX 800x400px)
+
+# 注册所有节点
+[[tool.comfy.node]]
+id = "LiveSearchNode"
+class_name = "LiveSearchNode"
+display_name = "🌐 Live Search (Legacy)"
+
+[[tool.comfy.node]]
+id = "LiveSearch_API_Loader"
+class_name = "LiveSearch_API_Loader"
+display_name = "🔑 Live Search API Loader"
+
+[[tool.comfy.node]]
+id = "LiveSearch_Settings"
+class_name = "LiveSearch_Settings"
+display_name = "⚙️ Live Search Settings"
+
+[[tool.comfy.node]]
+id = "LiveSearch_Agent"
+class_name = "LiveSearch_Agent"
+display_name = "🌐 Live Search Agent"
+
