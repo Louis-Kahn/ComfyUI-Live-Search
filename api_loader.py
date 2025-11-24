@@ -118,18 +118,39 @@ MODEL_CONFIGS = {
     "SiliconFlow (硅基流动)": {
         "base_url": "https://api.siliconflow.cn/v1",
         "models": [
+            # DeepSeek 系列
             "deepseek-chat",
             "deepseek-reasoner",
             "deepseek-v3",
+            # Qwen 系列（通用对话）
             "Qwen/Qwen2.5-72B-Instruct",
             "Qwen/Qwen2.5-32B-Instruct",
             "Qwen/Qwen2.5-14B-Instruct",
             "Qwen/Qwen2.5-7B-Instruct",
+            "Qwen/Qwen2.5-1.5B-Instruct",
+            # Qwen 代码模型
+            "Qwen/Qwen2.5-Coder-32B-Instruct",
+            "Qwen/Qwen2.5-Coder-7B-Instruct",
+            # Qwen 多模态
+            "Qwen/QVQ-72B-Preview",
+            "Qwen/Qwen-VL-72B-Instruct",
+            # Llama 系列
             "meta-llama/Llama-3.1-70B-Instruct",
             "meta-llama/Llama-3.1-8B-Instruct",
+            "meta-llama/Llama-3-70B-Instruct",
+            "meta-llama/Llama-3-8B-Instruct",
+            # Yi 系列
             "01-ai/Yi-1.5-34B-Chat",
             "01-ai/Yi-1.5-9B-Chat",
-            "THUDM/glm-4-9b-chat"
+            "01-ai/Yi-1.5-6B-Chat",
+            # GLM 系列
+            "THUDM/glm-4-9b-chat",
+            "THUDM/glm-4-9b-chat-1m",
+            # Mistral 系列
+            "mistralai/Mistral-7B-Instruct-v0.3",
+            # InternLM 系列
+            "internlm/internlm2_5-20b-chat",
+            "internlm/internlm2_5-7b-chat"
         ]
     },
     "Ollama (Local)": {
