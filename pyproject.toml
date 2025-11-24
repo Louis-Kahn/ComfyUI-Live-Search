@@ -1,13 +1,14 @@
 [project]
 name = "comfyui-live-search"
-description = "🌐 Live Search: Real-time web search and AI summarization. Internet search, web scraping, fact checking, weather, news. DuckDuckGo search with GPT-5.1, DeepSeek-V3, Gemini 3 Pro, Claude 4.5, Qwen3, Llama 4, Ollama. Modular architecture with API loader. 实时联网搜索、网页抓取、事实查询、天气新闻。支持GPT-5.1、DeepSeek-V3、Gemini 3 Pro、Claude 4.5、通义千问Qwen3等最新模型。"
-version = "1.0.2"
+description = "🌐 Live Search: Real-time web search and AI summarization. Internet search, web scraping, fact checking, weather, news, GPS coordinate conversion. DuckDuckGo search with GPT-5.1, DeepSeek-V3, Gemini 3 Pro, Claude 4.5, Qwen3, Doubao, Llama 4, Ollama. Modular architecture with API loader. Toggle web search on/off for pure LLM mode. 实时联网搜索、网页抓取、事实查询、天气新闻、GPS坐标转换。支持GPT-5.1、DeepSeek-V3、Gemini 3 Pro、Claude 4.5、通义千问Qwen3、豆包Doubao等最新模型。可关闭联网搜索作为纯LLM使用。"
+version = "1.0.3"
 license = { file = "LICENSE" }
 dependencies = [
     "requests>=2.25.0",
     "beautifulsoup4>=4.9.0",
     "ddgs>=9.0.0",
-    "python-dotenv>=1.0.0"
+    "python-dotenv>=1.0.0",
+    "geopy>=2.4.0"
 ]
 
 [project.urls]
@@ -20,11 +21,6 @@ DisplayName = "Live Search Agent"
 Icon = ""  # 可选: 添加图标链接 (SVG, PNG, JPG or GIF, MAX 800x400px)
 
 # 注册所有节点
-[[tool.comfy.node]]
-id = "LiveSearchNode"
-class_name = "LiveSearchNode"
-display_name = "🌐 Live Search (Legacy)"
-
 [[tool.comfy.node]]
 id = "LiveSearch_API_Loader"
 class_name = "LiveSearch_API_Loader"
