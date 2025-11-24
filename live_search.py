@@ -127,7 +127,7 @@ class SearchTool:
 
 class LLMClient:
     @staticmethod
-    def chat_completion(api_key, base_url, model, messages, temperature=0.7, proxy=None):
+    def chat_completion(api_key, base_url, model, messages, temperature=0.7, proxy=None, provider=None):
         """
         Generic OpenAI-compatible chat completion
         """
@@ -135,10 +135,18 @@ class LLMClient:
             return "Error: API Key is missing."
             
         url = f"{base_url.rstrip('/')}/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
+        
+        # Special handling for Volcengine (uses different auth header)
+        if provider == "Volcengine (Doubao)" or "ark.cn-beijing.volces.com" in base_url:
+            headers = {
+                "Authorization": f"Bearer {api_key}",  # Volcengine also uses Bearer
+                "Content-Type": "application/json"
+            }
+        else:
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
         
         payload = {
             "model": model,
@@ -154,6 +162,13 @@ class LLMClient:
             response.raise_for_status()
             data = response.json()
             return data['choices'][0]['message']['content']
+        except requests.exceptions.HTTPError as e:
+            error_detail = ""
+            try:
+                error_detail = response.json()
+            except:
+                error_detail = response.text
+            return f"Error calling LLM: HTTP {response.status_code} - {error_detail}"
         except Exception as e:
             return f"Error calling LLM: {str(e)}"
 
@@ -286,7 +301,7 @@ Examples:
 """},
                 {"role": "user", "content": prompt}
             ]
-            refined_query = LLMClient.chat_completion(resolved_api_key, base_url, final_model, refine_messages, proxy=valid_proxy)
+            refined_query = LLMClient.chat_completion(resolved_api_key, base_url, final_model, refine_messages, proxy=valid_proxy, provider=provider)
             if not refined_query.startswith("Error"):
                 print(f"[LiveSearch] Prompt optimized: {prompt} -> {refined_query}")
                 optimized_prompt_output = f"Original: {prompt}\nOptimized: {refined_query}"
@@ -343,6 +358,6 @@ Rules:
             {"role": "user", "content": f"User Query: {prompt}\n\nSearch Results:\n{full_context}"}
         ]
 
-        answer = LLMClient.chat_completion(resolved_api_key, base_url, final_model, final_messages, proxy=valid_proxy)
+        answer = LLMClient.chat_completion(resolved_api_key, base_url, final_model, final_messages, proxy=valid_proxy, provider=provider)
         
         return (answer, "\n".join(source_urls), optimized_prompt_output)
