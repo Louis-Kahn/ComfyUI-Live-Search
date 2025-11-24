@@ -18,9 +18,7 @@
 
 **ComfyUI Live Search Agent** is a powerful custom node that bridges the gap between ComfyUI and the real-time internet. 
 
-It combines the robustness of **DuckDuckGo/Google Search** with the intelligence of **LLMs (DeepSeek, OpenAI, etc.)** to fetch, read, and summarize information for your workflows. Whether you need current weather data, news summaries, or specific facts to prompt your image generation, this node handles it all.
-
-This project is inspired by the search capabilities of `comfyui_LLM_Polymath` and the user-friendly design of `ComfyUI-TutuBanana`.
+It combines the robustness of **DuckDuckGo Search** with the intelligence of **LLMs (DeepSeek, OpenAI, etc.)** to fetch, read, and summarize information for your workflows. Whether you need current weather data, news summaries, or specific facts to prompt your image generation, this node handles it all.
 
 ## 🏗️ New Modular Architecture
 
