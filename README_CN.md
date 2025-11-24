@@ -1,12 +1,16 @@
 <div align="center">
 
-# 🌐 ComfyUI Live Search Agent
+# 🌐 Live Search - ComfyUI 实时联网搜索节点
 
-**ComfyUI 的实时联网搜索与 AI 总结节点**
+**让你的 ComfyUI 接入互联网 | 搜索、抓取、总结一站式解决**
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8%2B-green)](https://www.python.org/)
-[![DeepSeek](https://img.shields.io/badge/Support-DeepSeek-blueviolet)](https://www.deepseek.com/)
+[![LLM](https://img.shields.io/badge/LLM-8%2B_Providers-orange)](https://github.com/Zone-Roam/ComfyUI-Live-Search)
+
+**🔥 热门场景**: 实时天气 · 新闻摘要 · 事实查询 · 产品评测 · 网页抓取
+
+**🤖 支持模型**: DeepSeek · 通义千问 · 豆包 · OpenAI · Gemini · Claude · Grok · Ollama
 
 [中文文档](README_CN.md) | [English](README.md)
 
@@ -14,11 +18,22 @@
 
 ---
 
-## 📖 项目简介
+## 📖 为什么选择 Live Search?
 
-**ComfyUI Live Search Agent** 是一个强大的自定义节点，旨在打通 ComfyUI 与实时互联网之间的壁垒。
+**ComfyUI Live Search** 让你的工作流直接访问互联网！这是一个功能强大的**联网搜索节点**，支持：
 
-它结合了 **DuckDuckGo 搜索引擎** 与 **多种大语言模型**（DeepSeek, OpenAI, Gemini, Anthropic 等）的能力，能够自动搜索、抓取、阅读网页内容并智能总结。无论你是需要获取实时新闻、天气信息、产品评测，还是为图像生成寻找精确的事实依据，这个节点都能轻松搞定。
+✅ **实时搜索**: DuckDuckGo 搜索引擎,稳定可靠  
+✅ **智能总结**: AI 自动阅读网页并提取关键信息  
+✅ **多模型支持**: DeepSeek、通义千问、豆包、OpenAI、Gemini、Claude 等 8+ LLM  
+✅ **模块化架构**: API配置、搜索设置、执行逻辑分离,灵活复用  
+✅ **国内友好**: 完美支持国产大模型(通义千问/Qwen、豆包/Doubao、DeepSeek)
+
+**典型应用场景**:
+- 🌤️ 查询实时天气生成对应场景图
+- 📰 获取最新新闻并生成相关内容
+- 🔍 事实核查和信息验证
+- 🛍️ 产品信息查询和评测总结
+- 🌐 任何需要联网信息的创意工作流
 
 ## 🏗️ 新版架构设计
 

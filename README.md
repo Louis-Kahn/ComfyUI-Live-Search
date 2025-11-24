@@ -1,12 +1,16 @@
 <div align="center">
 
-# 🌐 ComfyUI Live Search Agent
+# 🌐 Live Search - Real-time Web Search for ComfyUI
 
-**Real-time Web Search & AI Summarization for ComfyUI**
+**Connect Your ComfyUI to the Internet | Search, Scrape, Summarize**
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8%2B-green)](https://www.python.org/)
-[![DeepSeek](https://img.shields.io/badge/Support-DeepSeek-blueviolet)](https://www.deepseek.com/)
+[![LLM](https://img.shields.io/badge/LLM-8%2B_Providers-orange)](https://github.com/Zone-Roam/ComfyUI-Live-Search)
+
+**🔥 Use Cases**: Real-time Weather · News Summary · Fact Checking · Product Reviews · Web Scraping
+
+**🤖 Supported Models**: DeepSeek · Qwen · Doubao · OpenAI · Gemini · Claude · Grok · Ollama
 
 [中文文档](README_CN.md) | [English](README.md)
 
@@ -14,11 +18,22 @@
 
 ---
 
-## 📖 Introduction
+## 📖 Why Choose Live Search?
 
-**ComfyUI Live Search Agent** is a powerful custom node that bridges the gap between ComfyUI and the real-time internet. 
+**ComfyUI Live Search** brings the internet directly to your workflows! This powerful **internet search node** provides:
 
-It combines the power of **DuckDuckGo Search Engine** with **multiple Large Language Models** (DeepSeek, OpenAI, Gemini, Anthropic, etc.) to automatically search, fetch, read, and intelligently summarize web content. Whether you need real-time news, weather information, product reviews, or specific facts to prompt your image generation, this node handles it all.
+✅ **Real-time Search**: DuckDuckGo search engine, stable and reliable  
+✅ **AI Summarization**: Automatically reads web pages and extracts key information  
+✅ **Multi-LLM Support**: DeepSeek, Qwen, Doubao, OpenAI, Gemini, Claude, and 8+ more  
+✅ **Modular Architecture**: Separated API config, search settings, and execution logic  
+✅ **Chinese-Friendly**: Perfect support for Chinese LLM providers (Qwen, Doubao, DeepSeek)
+
+**Typical Use Cases**:
+- 🌤️ Query real-time weather to generate scene images
+- 📰 Fetch latest news and generate related content
+- 🔍 Fact checking and information verification
+- 🛍️ Product information lookup and review summarization
+- 🌐 Any creative workflow requiring internet information
 
 ## 🏗️ New Modular Architecture
 
