@@ -18,7 +18,7 @@
 
 **ComfyUI Live Search Agent** is a powerful custom node that bridges the gap between ComfyUI and the real-time internet. 
 
-It combines the robustness of **DuckDuckGo Search** with the intelligence of **LLMs (DeepSeek, OpenAI, etc.)** to fetch, read, and summarize information for your workflows. Whether you need current weather data, news summaries, or specific facts to prompt your image generation, this node handles it all.
+It combines the power of **DuckDuckGo Search Engine** with **multiple Large Language Models** (DeepSeek, OpenAI, Gemini, Anthropic, etc.) to automatically search, fetch, read, and intelligently summarize web content. Whether you need real-time news, weather information, product reviews, or specific facts to prompt your image generation, this node handles it all.
 
 ## 🏗️ New Modular Architecture
 
@@ -52,22 +52,29 @@ It combines the robustness of **DuckDuckGo Search** with the intelligence of **L
 
 ## ✨ Key Features
 
-- **🔍 Dual Search Engines**: 
-  - **DuckDuckGo**: (Default) Private, no API key needed, cloud-friendly, no ad interference.
-  - **Google**: Classic search for specific needs.
+- **🔍 DuckDuckGo Search Engine**:
+  - Stable and automation-friendly
+  - No API key required, privacy-focused
+  - Proxy support for various network environments
+  - High-quality search results for real-time information retrieval
   
-- **🧠 DeepSeek Native Support**: 
-  - First-class support for **DeepSeek-V3/R1**.
-  - Built-in integration for **Official API**, **Aliyun (Bailian)**, and **Volcengine (Ark)**.
-  - Auto-mapping for Aliyun models (`deepseek-chat` -> `deepseek-v3`).
+- **🧠 Multiple LLM Provider Support**:
+  - **OpenAI**: GPT-4o, GPT-4o-mini, GPT-4-turbo, o1-preview, o1-mini
+  - **DeepSeek**: Full support for DeepSeek-V3 and DeepSeek-R1 (Official API / Aliyun Bailian / Volcengine Ark)
+  - **Gemini**: gemini-2.0-flash-exp, gemini-1.5-pro, gemini-1.5-flash
+  - **Anthropic**: Claude series models
+  - **Chinese Platforms**: Grok, Doubao, Qwen
+  - **Local Deployment**: Ollama support
 
-- **🌤️ Smart Modes**:
-  - **Weather/Time Mode**: Just input coordinates (e.g., `30.6, 104.0`), and it auto-fetches local time & weather.
-  - **Smart Search**: Uses LLM to refine your vague prompts into precise search queries.
+- **🎯 Smart Features**:
+  - **Prompt Optimization**: Optional LLM-powered search keyword refinement for better precision
+  - **Multi-language Output**: Auto-detect, force Chinese, or force English output modes
+  - **Modular Architecture**: Separated API config, search settings, and execution logic for flexibility
 
-- **☁️ Cloud & Privacy First**:
-  - **API Key Security**: Keys entered in the UI are **NEVER** saved to disk (perfect for shared cloud environments like AutoDL/RunningHub).
-  - **Local Config**: Supports `api_config.json` for local power users.
+- **☁️ Cloud & Privacy Security**:
+  - **API Key Safety**: Keys entered in nodes are **NOT saved to disk** (perfect for AutoDL, RunningHub shared environments)
+  - **Local Config**: Supports both `.env` and `api_config.json` configuration methods
+  - **Proxy Support**: Built-in proxy configuration for various network scenarios
 
 ## 🚀 Installation
 
@@ -114,19 +121,65 @@ The image below shows both usage methods:
 
 ---
 
-### Node: **🌐 Live Search Agent**
+### Method 1: New Modular Architecture (Recommended) ⭐
+
+#### 1. **🔑 Live Search API Loader**
+
+Configure LLM API and model parameters.
+
+| Parameter | Description |
+|-----------|-------------|
+| **provider** | Choose provider: OpenAI, DeepSeek, Gemini, Anthropic, Grok, Doubao, Qwen, Ollama, etc. |
+| **model** | Select model from dropdown list |
+| **api_key** | API key (optional, supports .env) |
+| **base_url** | API endpoint (optional, uses default standard endpoints) |
+| **temperature** | Temperature (0.0-2.0) |
+| **max_tokens** | Maximum output length |
+| **timeout** | Request timeout |
+
+#### 2. **⚙️ Live Search Settings**
+
+Configure search behavior.
+
+| Parameter | Description |
+|-----------|-------------|
+| **num_results** | Number of search results (1-10) |
+| **output_language** | Output language: Auto / 中文 / English |
+| **optimize_prompt** | Whether to optimize search query |
+| **proxy** | Proxy address (optional) |
+
+#### 3. **🌐 Live Search Agent**
+
+Main search node, connects to the above two nodes.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| **prompt** | STRING | Your question |
+| **llm_config** | LLM_CONFIG | From API Loader |
+| **search_settings** | SEARCH_SETTINGS | From Settings |
+
+| Output | Description |
+|--------|-------------|
+| **answer** | AI-generated answer |
+| **source_urls** | Referenced source links |
+| **optimized_prompt** | Optimized search query |
+
+---
+
+### Method 2: Legacy Single-Node Mode
+
+#### Node: **🌐 Live Search (Legacy)**
 
 #### Input Parameters
 
 | Parameter | Description |
 | :--- | :--- |
-| **prompt** | Your question. Supports both Chinese and English. e.g., *"北京现在的天气"* or *"Who won the Super Bowl?"* |
-| **output_language** | 🌐 Output Language<br>• **Auto (跟随输入)** (default): Automatically matches question language<br>• **中文**: Force Chinese output<br>• **English**: Force English output |
+| **prompt** | Your question. Supports both Chinese and English. e.g., *"What's the weather in Beijing?"* or *"北京现在的天气"* |
+| **output_language** | 🌐 Output Language<br>• **Auto** (default): Automatically matches question language<br>• **中文**: Force Chinese output<br>• **English**: Force English output |
 | **optimize_prompt** | 🔄 Prompt Optimization Toggle (Recommended ON)<br>• **OFF** (default): Use original input directly<br>• **ON**: LLM optimizes your question into precise search keywords<br>  - Preserves original language (CN→CN, EN→EN)<br>  - Removes redundant words, keeps core info<br>  - Outputs before/after comparison |
-| **search_engine** | 🔍 **DuckDuckGo** (Only Option)<br>• Stable and automation-friendly<br>• Works reliably with proxies<br>• High-quality search results |
 | **provider** | Choose your LLM provider: `OpenAI`, `DeepSeek (Official/Aliyun/Volcengine)`, `Gemini`, etc. |
 | **model** | 🎯 Model Selection (Dropdown)<br>• **OpenAI**: gpt-4o, gpt-4o-mini, gpt-4-turbo, o1-preview, etc.<br>• **DeepSeek**: deepseek-chat, deepseek-reasoner<br>• **Gemini**: gemini-2.0-flash-exp, gemini-1.5-pro, etc.<br>• Supports search filtering for quick model lookup |
-| **api_key** | (Optional) Your API Key. If left empty, it tries to load from `api_config.json`. |
+| **api_key** | (Optional) Your API Key. If left empty, it tries to load from config files. |
 | **proxy** | (Optional) Proxy address like `http://127.0.0.1:7890`. Leave empty for direct connection. |
 
 #### Outputs
