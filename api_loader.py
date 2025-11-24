@@ -118,22 +118,40 @@ MODEL_CONFIGS = {
     "SiliconFlow (硅基流动)": {
         "base_url": "https://api.siliconflow.cn/v1",
         "models": [
-            # DeepSeek 系列
-            "deepseek-chat",
-            "deepseek-reasoner",
+            # DeepSeek 系列（根据模型广场实际名称）
             "deepseek-v3",
-            # Qwen 系列（通用对话）
-            "Qwen/Qwen2.5-72B-Instruct",
+            "deepseek-v3.1",
+            "deepseek-r1-0528",
+            # Qwen 系列（根据模型广场实际名称，小写格式）
+            "qwen2.5-72b-instruct",
+            "qwen2.5-7b-instruct",
+            "qwen2.5-3b-instruct",
+            "Qwen/Qwen2.5-72B-Instruct",  # 保留大写格式作为备选
+            "Qwen/Qwen2.5-7B-Instruct",
             "Qwen/Qwen2.5-32B-Instruct",
             "Qwen/Qwen2.5-14B-Instruct",
-            "Qwen/Qwen2.5-7B-Instruct",
             "Qwen/Qwen2.5-1.5B-Instruct",
             # Qwen 代码模型
             "Qwen/Qwen2.5-Coder-32B-Instruct",
             "Qwen/Qwen2.5-Coder-7B-Instruct",
+            "qwen3-coder-30b-a3b-instruct",
+            "qwen3-coder-480b-a35b-instruct",
+            "qwen3-coder-plus",
+            # Qwen3 系列
+            "qwen3-max-preview",
+            "qwen3-235b-a22b",
+            "qwen3-235b-a22b-instruct-2507",
+            "qwen3-30b-a3b",
+            "qwen3-32b",
             # Qwen 多模态
+            "qvq-max",
+            "qvq-max-latest",
             "Qwen/QVQ-72B-Preview",
-            "Qwen/Qwen-VL-72B-Instruct",
+            # GLM 系列（智谱）
+            "glm-4.5",
+            "glm-4.5-air",
+            "glm-4.6",
+            "THUDM/glm-4-9b-chat",
             # Llama 系列
             "meta-llama/Llama-3.1-70B-Instruct",
             "meta-llama/Llama-3.1-8B-Instruct",
@@ -143,14 +161,12 @@ MODEL_CONFIGS = {
             "01-ai/Yi-1.5-34B-Chat",
             "01-ai/Yi-1.5-9B-Chat",
             "01-ai/Yi-1.5-6B-Chat",
-            # GLM 系列
-            "THUDM/glm-4-9b-chat",
-            "THUDM/glm-4-9b-chat-1m",
-            # Mistral 系列
-            "mistralai/Mistral-7B-Instruct-v0.3",
-            # InternLM 系列
-            "internlm/internlm2_5-20b-chat",
-            "internlm/internlm2_5-7b-chat"
+            # 其他模型
+            "baichuan2-turbo",
+            "Moonshot-Kimi-K2-Instruct",
+            "abab6.5g-chat",
+            "abab6.5s-chat",
+            "abab6.5t-chat"
         ]
     },
     "Ollama (Local)": {
