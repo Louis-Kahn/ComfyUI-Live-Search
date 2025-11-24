@@ -8,9 +8,9 @@
 [![Python](https://img.shields.io/badge/python-3.8%2B-green)](https://www.python.org/)
 [![LLM](https://img.shields.io/badge/LLM-8%2B_Providers-orange)](https://github.com/Zone-Roam/ComfyUI-Live-Search)
 
-**🔥 Use Cases**: Real-time Weather · News Summary · Fact Checking · Product Reviews · Web Scraping
+**🔥 Use Cases**: Real-time Weather · News Summary · Fact Checking · Product Reviews · Web Scraping · GPS Coordinate Conversion
 
-**🤖 Supported Models**: GPT-5.1 · DeepSeek-V3 · Gemini 3 Pro · Claude 4.5 · Qwen3 · Llama 4 · Ollama
+**🤖 Supported Models**: GPT-5.1 · DeepSeek-V3 · Gemini 3 Pro · Claude 4.5 · Qwen3 · Doubao · Llama 4 · Ollama
 
 [中文文档](README_CN.md) | [English](README.md)
 
@@ -33,6 +33,8 @@
 - 📰 Fetch latest news and generate related content
 - 🔍 Fact checking and information verification
 - 🛍️ Product information lookup and review summarization
+- 📍 GPS coordinate to location conversion (e.g., "40.00023, 116.27808" → "Beijing, Haidian District")
+- 💬 Pure LLM chat (disable web search for direct AI conversations)
 - 🌐 Any creative workflow requiring internet information
 
 ## 🏗️ New Modular Architecture
@@ -76,16 +78,20 @@
 - **🧠 Multiple LLM Provider Support** (Latest 2025 Models):
   - **OpenAI**: GPT-5.1, GPT-5 series, GPT-4.1 series, GPT-4o series, O3 series reasoning models
   - **DeepSeek**: deepseek-v3, deepseek-chat, deepseek-reasoner (Official/Aliyun/Volcengine)
-  - **Gemini**: gemini-3-pro, gemini-2.5 series, gemini-2.0 series, gemini-1.5 series
-  - **Anthropic**: Claude 4.5 Sonnet/Haiku, Claude 4.1 Opus
-  - **Volcengine (Doubao)**: doubao-1.5 series, deepseek-v3.1/r1, kimi-k2
-  - **Qwen (Aliyun)**: qwen3-max, qwen-plus, qwen-flash (Aliyun Bailian)
+  - **Gemini**: gemini-3-pro, gemini-2.5 series, gemini-2.0 series, gemini-1.5 series (OpenAI-compatible format)
+  - **Anthropic**: Claude 4.5 Sonnet/Haiku, Claude 4.1 Opus (native API support)
+  - **Volcengine (Doubao)**: doubao-seed-1.6 series, deepseek-v3.1 (tested and verified)
+  - **Qwen (Aliyun)**: qwen3-max, qwen-plus, qwen-flash (Aliyun DashScope)
   - **Grok**: grok-2 series (xAI Official)
   - **Local Deployment**: Ollama supports llama4, qwen3, deepseek-v3, phi4, etc.
+  
+  **✅ All providers tested and verified for correct API authentication and response parsing**
 
 - **🎯 Smart Features**:
   - **Prompt Optimization**: Optional LLM-powered search keyword refinement for better precision
   - **Multi-language Output**: Auto-detect, force Chinese, or force English output modes
+  - **Coordinate Search**: Automatic GPS coordinate to location name conversion using geopy
+  - **Web Search Toggle**: Enable/disable web search to use as a pure LLM node
   - **Modular Architecture**: Separated API config, search settings, and execution logic for flexibility
 
 - **☁️ Cloud & Privacy Security**:
@@ -160,6 +166,7 @@ Configure search behavior.
 
 | Parameter | Description |
 |-----------|-------------|
+| **enable_web_search** | Enable/disable web search (OFF = use as pure LLM) |
 | **num_results** | Number of search results (1-10) |
 | **output_language** | Output language: Auto / 中文 / English |
 | **optimize_prompt** | Whether to optimize search query |
@@ -231,6 +238,18 @@ Main search node, connects to the above two nodes.
 - **Input**: `"What's the weather in Beijing?"` (English question)
 - **Output Language**: `中文` 🇨🇳
 - **Output**: Beijing weather info (**answered in Chinese**)
+
+**5. GPS Coordinate Search**
+- **Input**: `"What's the weather at coordinates 40.00023, 116.27808?"`
+- **Optimize**: `ON` ✅
+- **Auto-conversion**: Coordinates → "Beijing, Haidian District"
+- **Optimized Query**: `"timeanddate Beijing Haidian"`
+- **Output**: Real-time weather and time for Haidian District, Beijing
+
+**6. Pure LLM Mode (No Search)**
+- **Settings**: `enable_web_search = OFF`
+- **Input**: `"Explain quantum computing"`
+- **Output**: Direct LLM response without web search (faster, no internet required)
 
 ## 🔍 Why Only DuckDuckGo?
 

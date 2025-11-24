@@ -8,9 +8,9 @@
 [![Python](https://img.shields.io/badge/python-3.8%2B-green)](https://www.python.org/)
 [![LLM](https://img.shields.io/badge/LLM-8%2B_Providers-orange)](https://github.com/Zone-Roam/ComfyUI-Live-Search)
 
-**🔥 热门场景**: 实时天气 · 新闻摘要 · 事实查询 · 产品评测 · 网页抓取
+**🔥 热门场景**: 实时天气 · 新闻摘要 · 事实查询 · 产品评测 · 网页抓取 · GPS坐标转换
 
-**🤖 支持模型**: GPT-5.1 · DeepSeek-V3 · Gemini 3 Pro · Claude 4.5 · Qwen3 · Llama 4 · Ollama
+**🤖 支持模型**: GPT-5.1 · DeepSeek-V3 · Gemini 3 Pro · Claude 4.5 · Qwen3 · Doubao · Llama 4 · Ollama
 
 [中文文档](README_CN.md) | [English](README.md)
 
@@ -33,6 +33,8 @@
 - 📰 获取最新新闻并生成相关内容
 - 🔍 事实核查和信息验证
 - 🛍️ 产品信息查询和评测总结
+- 📍 GPS 坐标转地名（如 "40.00023, 116.27808" → "北京海淀区"）
+- 💬 纯 LLM 对话（关闭联网搜索，直接 AI 对话）
 - 🌐 任何需要联网信息的创意工作流
 
 ## 🏗️ 新版架构设计
@@ -76,16 +78,20 @@
 - **🧠 多 LLM 提供商支持**（2025年底最新模型）：
   - **OpenAI**: GPT-5.1, GPT-5系列, GPT-4.1系列, GPT-4o系列, O3系列推理模型
   - **DeepSeek**: deepseek-v3, deepseek-chat, deepseek-reasoner（支持官方/阿里云/火山引擎）
-  - **Gemini**: gemini-3-pro, gemini-2.5系列, gemini-2.0系列, gemini-1.5系列
-  - **Anthropic**: Claude 4.5 Sonnet/Haiku, Claude 4.1 Opus
-  - **火山引擎(豆包)**: doubao-1.5系列, deepseek-v3.1/r1, kimi-k2
+  - **Gemini**: gemini-3-pro, gemini-2.5系列, gemini-2.0系列, gemini-1.5系列（OpenAI兼容格式）
+  - **Anthropic**: Claude 4.5 Sonnet/Haiku, Claude 4.1 Opus（原生API支持）
+  - **火山引擎(豆包)**: doubao-seed-1.6系列, deepseek-v3.1（已测试验证）
   - **通义千问**: qwen3-max, qwen-plus, qwen-flash（阿里云百炼）
   - **Grok**: grok-2系列（xAI官方）
   - **本地部署**: Ollama支持 llama4, qwen3, deepseek-v3, phi4等
+  
+  **✅ 所有供应商均已测试验证，确保 API 认证和响应解析正确**
 
 - **🎯 智能功能**：
   - **提示词优化**：可选开启 LLM 优化搜索关键词，提升搜索精准度
   - **多语言输出**：支持自动检测、强制中文、强制英文三种输出模式
+  - **坐标转换**：自动将 GPS 坐标转换为地名（使用 geopy 库）
+  - **联网开关**：可关闭联网搜索，作为纯 LLM 节点使用
   - **模块化架构**：API 配置、搜索设置、执行逻辑分离，灵活复用
 
 - **☁️ 云端与隐私安全**：
@@ -160,6 +166,7 @@ pip install -r requirements.txt
 
 | 参数 | 说明 |
 |------|------|
+| **enable_web_search** | 启用/禁用联网搜索（关闭 = 作为纯 LLM 使用） |
 | **num_results** | 搜索结果数量 (1-10) |
 | **output_language** | 输出语言：Auto / 中文 / English |
 | **optimize_prompt** | 是否优化搜索词 |
@@ -232,6 +239,18 @@ pip install -r requirements.txt
 - **输入**: `"北京现在的天气"` (中文问题)
 - **输出语言**: `English` 🇺🇸
 - **输出**: Beijing weather info (**answered in English**)
+
+**5. GPS 坐标搜索**
+- **输入**: `"坐标 40.00023, 116.27808 的天气"`
+- **优化**: `开启` ✅
+- **自动转换**: 坐标 → "北京, 海淀区"
+- **优化查询**: `"timeanddate Beijing Haidian"`
+- **输出**: 北京海淀区的实时天气和时间信息
+
+**6. 纯 LLM 模式（无搜索）**
+- **设置**: `enable_web_search = 关闭`
+- **输入**: `"解释一下量子计算"`
+- **输出**: 直接 LLM 回答，不进行联网搜索（更快，无需网络）
 
 ## 🔍 为什么只支持 DuckDuckGo？
 

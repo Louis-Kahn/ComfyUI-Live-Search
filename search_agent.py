@@ -174,35 +174,69 @@ class LLMClient:
         proxy = llm_config.get("proxy", None)
         provider = llm_config.get("provider", "")
         
-        if not api_key:
+        # Ollama (Local) typically doesn't require API key
+        if not api_key and "Ollama" not in provider:
             return "Error: API Key is missing."
-            
-        url = f"{base_url.rstrip('/')}/chat/completions"
         
-        # Standard headers
+        # Anthropic (Claude) uses /messages endpoint instead of /chat/completions
+        if "Anthropic" in provider:
+            url = f"{base_url.rstrip('/')}/messages"
+        else:
+            url = f"{base_url.rstrip('/')}/chat/completions"
+        
+        # Provider-specific authentication and headers
         headers = {
-            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
         
-        # Volcengine specific adjustment: ensure no extra headers interfere, strictly follow OpenAI format
-        if "Volcengine" in provider:
-            # Volcengine (Ark) supports standard OpenAI format with Bearer token
-            # Just ensuring stream is False is the key
-            pass
+        # Anthropic (Claude) uses x-api-key header instead of Bearer token
+        if "Anthropic" in provider:
+            headers["x-api-key"] = api_key
+            headers["anthropic-version"] = "2023-06-01"  # Latest stable version
+        # Aliyun providers (DashScope) - compatible mode supports Bearer token
+        elif "Aliyun" in provider or provider in ["DeepSeek (Aliyun)", "Qwen (Aliyun)"]:
+            # DashScope compatible mode uses Bearer token (OpenAI format)
+            headers["Authorization"] = f"Bearer {api_key}"
+        # Gemini (OpenAI-Format) - API key should be in query parameter, not header
+        elif "Gemini" in provider:
+            # Gemini's OpenAI-compatible endpoint uses ?key= query parameter
+            # Don't add Authorization header for Gemini
+            url = f"{url}?key={api_key}"
+        # Ollama (Local) - usually no auth needed, but some setups use it
+        elif "Ollama" in provider:
+            # Ollama typically doesn't need auth, but if API key is provided, use it
+            if api_key:
+                headers["Authorization"] = f"Bearer {api_key}"
+        # All other providers (OpenAI, DeepSeek, Grok, Volcengine) use standard Bearer token
+        else:
+            headers["Authorization"] = f"Bearer {api_key}"
         
-        payload = {
-            "model": model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "stream": False # Explicitly disable stream as requested
-        }
-        
-        # Remove max_tokens for o1 models as they don't support it
-        if model.startswith("o1-"):
-            payload.pop("max_tokens", None)
-            payload.pop("temperature", None) # o1 often has fixed temp
+        # Anthropic (Claude) uses different payload structure
+        if "Anthropic" in provider:
+            # Anthropic API format: { "model": "...", "max_tokens": ..., "messages": [...] }
+            # Note: Anthropic requires max_tokens (not optional)
+            # Temperature is optional but supported by most models
+            payload = {
+                "model": model,
+                "max_tokens": max_tokens,
+                "messages": messages
+            }
+            # Add temperature if supported (most Claude models support it)
+            if "haiku" not in model.lower():  # Some Haiku models may not support temperature
+                payload["temperature"] = temperature
+        else:
+            # Standard OpenAI-compatible format
+            payload = {
+                "model": model,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "stream": False # Explicitly disable stream as requested
+            }
+            # Remove max_tokens for o1 models as they don't support it
+            if model.startswith("o1-") or model == "o1" or model == "o1-pro":
+                payload.pop("max_tokens", None)
+                payload.pop("temperature", None) # o1 often has fixed temp
             
         proxies = {"http": proxy, "https": proxy} if proxy else None
         
@@ -220,7 +254,20 @@ class LLMClient:
             response.raise_for_status()
             data = response.json()
             
-            if 'choices' in data and len(data['choices']) > 0:
+            # Anthropic (Claude) uses different response format
+            if "Anthropic" in provider:
+                if 'content' in data and len(data['content']) > 0:
+                    # Claude returns content as array of text blocks
+                    content_blocks = data['content']
+                    text_content = ""
+                    for block in content_blocks:
+                        if block.get('type') == 'text':
+                            text_content += block.get('text', '')
+                    return text_content if text_content else str(data)
+                else:
+                    return f"Error: Unexpected response format from Anthropic. Response: {data}"
+            # Standard OpenAI-compatible format (OpenAI, DeepSeek, Grok, Volcengine, Gemini, Aliyun, Ollama)
+            elif 'choices' in data and len(data['choices']) > 0:
                 return data['choices'][0]['message']['content']
             else:
                 return f"Error: Unexpected response format from LLM provider. Response: {data}"
@@ -254,6 +301,7 @@ class LiveSearch_Agent:
     
     def process_search(self, prompt, llm_config, search_settings):
         # Extract settings
+        enable_web_search = search_settings.get("enable_web_search", True)
         num_results = search_settings.get("num_results", 3)
         output_language = search_settings.get("output_language", "Auto (跟随输入)")
         optimize_prompt = search_settings.get("optimize_prompt", False)
@@ -262,6 +310,11 @@ class LiveSearch_Agent:
         # Add proxy to llm_config for LLM calls
         llm_config_with_proxy = llm_config.copy()
         llm_config_with_proxy["proxy"] = valid_proxy
+        
+        # If web search is disabled, use LLM directly without search
+        if not enable_web_search:
+            print("[LiveSearch] Web search disabled, using LLM directly")
+            return self._direct_llm_response(prompt, llm_config_with_proxy, output_language)
         
         # 1. Determine Search Query
         search_query = prompt
@@ -438,6 +491,38 @@ Rules:
         answer = LLMClient.chat_completion(llm_config_with_proxy, final_messages)
         
         return (answer, "\n".join(source_urls), optimized_prompt_output)
+    
+    def _direct_llm_response(self, prompt, llm_config, output_language):
+        """
+        Direct LLM response without web search
+        Used when enable_web_search is False
+        """
+        # Determine output language instruction
+        language_instruction = ""
+        if output_language == "中文":
+            language_instruction = "You MUST answer in Chinese (简体中文)."
+        elif output_language == "English":
+            language_instruction = "You MUST answer in English."
+        else:  # Auto (跟随输入)
+            language_instruction = "Answer in the SAME LANGUAGE as the user's question."
+        
+        system_prompt = f"""You are a helpful assistant.
+Rules:
+1. {language_instruction}
+2. Answer the user's question directly based on your knowledge
+3. Be concise and well-structured"""
+        
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+        ]
+        
+        answer = LLMClient.chat_completion(llm_config, messages)
+        
+        if answer.startswith("Error"):
+            return (f"Error: {answer}", "", "No optimization (direct LLM mode)")
+        
+        return (answer, "", "No optimization (direct LLM mode, web search disabled)")
 
 NODE_CLASS_MAPPINGS = {
     "LiveSearch_Agent": LiveSearch_Agent

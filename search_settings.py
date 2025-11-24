@@ -16,6 +16,7 @@ class LiveSearch_Settings:
     def INPUT_TYPES(s):
         return {
             "required": {
+                "enable_web_search": ("BOOLEAN", {"default": True, "label_on": "Web Search ON", "label_off": "Web Search OFF"}),
                 "num_results": ("INT", {"default": 3, "min": 1, "max": 10, "step": 1}),
                 "output_language": (["Auto (跟随输入)", "中文", "English"], {"default": "Auto (跟随输入)"}),
                 "optimize_prompt": ("BOOLEAN", {"default": False, "label_on": "Optimize ON", "label_off": "Optimize OFF"}),
@@ -30,19 +31,21 @@ class LiveSearch_Settings:
     FUNCTION = "load_settings"
     CATEGORY = "LiveSearch"
     
-    def load_settings(self, num_results, output_language, optimize_prompt, proxy=""):
+    def load_settings(self, enable_web_search, num_results, output_language, optimize_prompt, proxy=""):
         """
         Load search settings
         Returns a settings dict that can be passed to the search agent
         """
         search_settings = {
+            "enable_web_search": enable_web_search,
             "num_results": num_results,
             "output_language": output_language,
             "optimize_prompt": optimize_prompt,
             "proxy": proxy.strip() if proxy else None
         }
         
-        print(f"[LiveSearch Settings] Configured: {num_results} results, Language: {output_language}, Optimize: {optimize_prompt}")
+        mode = "Web Search" if enable_web_search else "LLM Only (No Search)"
+        print(f"[LiveSearch Settings] Configured: {mode}, {num_results} results, Language: {output_language}, Optimize: {optimize_prompt}")
         
         return (search_settings,)
 
