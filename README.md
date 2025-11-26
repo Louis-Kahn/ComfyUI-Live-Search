@@ -149,13 +149,15 @@ Then restart ComfyUI.
 
 ## 🛠️ Usage Guide
 
-### 📸 Workflow Example
+### 📸 Demo Screenshots
 
-The image below shows both usage methods:
-- **Left**: Legacy single-node mode - Simple and fast, all configs in one node
-- **Bottom right**: New modular architecture - API Loader + Settings + Agent, more flexible and reusable
+| Screenshot | Scenario |
+|------------|----------|
+| ![Weather-to-Image workflow](images/ScreenShot_2025-11-26_031749_809.png) | **Weather → Prompt → Image**: T2T mode fetches Beijing’s live weather via DuckDuckGo + Open-Meteo, then hands the summarized scene to a downstream text-to-image graph. |
+| ![TI2T landmark detective](images/ScreenShot_2025-11-26_184426_283.png) | **TI2T Landmark Detective**: upload an Eiffel Tower photo, let GPT‑5.1 VLM generate search keywords, crawl trusted weather/time sources, and answer in Chinese. |
+| ![Pure LLM research mode](images/ScreenShot_2025-11-26_023515_251.png) | **Pure LLM Research Mode**: disable web search, apply a custom “Physics Professor” role, and let GPT‑5.1 respond directly for deep dives without network latency. |
 
-![Workflow Example](images/workflow_example.png)
+> Tip: mix and match Settings (mode, language, proxy) with different providers to recreate these flows or capture your own demos.
 
 ---
 
