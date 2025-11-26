@@ -211,67 +211,6 @@ Main search node, connects to the above two nodes.
 
 ---
 
-### Method 2: Legacy Single-Node Mode
-
-#### Node: **🌐 Live Search (Legacy)**
-
-#### Input Parameters
-
-| Parameter | Description |
-| :--- | :--- |
-| **prompt** | Your question. Supports both Chinese and English. e.g., *"What's the weather in Beijing?"* or *"北京现在的天气"* |
-| **output_language** | 🌐 Output Language<br>• **中文**: Force Chinese output<br>• **English**: Force English output |
-| **optimize_query** | 🔄 Search Keyword Optimization (Recommended ON)<br>• **OFF** (default): Use original input directly<br>• **ON**: LLM rewrites the query (English keywords) for better DuckDuckGo recall<br>  - Preserves answer language via Agent settings<br>  - Removes redundancy, keeps core info<br>  - Outputs before/after comparison |
-| **provider** | Choose your LLM provider: `OpenAI`, `DeepSeek (Official/Aliyun/Volcengine)`, `Gemini`, etc. |
-| **model** | 🎯 Model Selection (Dropdown)<br>• **OpenAI**: gpt-5.1, gpt-5, gpt-4.1, o3, o3-pro, etc.<br>• **DeepSeek**: deepseek-v3, deepseek-chat, deepseek-reasoner<br>• **Gemini**: gemini-3-pro, gemini-2.5-pro, gemini-2.5-flash, etc.<br>• **Claude**: claude-sonnet-4-5, claude-haiku-4-5, etc.<br>• Supports search filtering for quick model lookup |
-| **api_key** | (Optional) Your API Key. If left empty, it tries to load from config files. |
-| **proxy** | (Optional) Proxy address like `http://127.0.0.1:7890`. Leave empty for direct connection. |
-
-#### Outputs
-
-| Output | Description |
-| :--- | :--- |
-| **answer** | AI-generated answer based on search results |
-| **source_urls** | List of referenced web page links |
-| **optimized_prompt** | Shows prompt optimization status (whether optimized, before/after comparison) |
-
-#### Example Workflows
-
-**1. Real-time Weather Image Generation**
-- **Input**: `"What's the weather in Beijing?"`
-- **Optimize**: `ON` ✅
-- **Optimized**: `"Beijing weather now"`
-- **Output**: "Currently 2:00 PM in Beijing, Sunny, 15°C."
-- → [Connect to Text2Image] → Generate Beijing sunny street scene
-
-**2. Fact Checking**
-- **Input**: `"Who won the latest Super Bowl?"`
-- **Optimize**: `ON` ✅
-- **Output**: Accurate answer based on real-time results
-
-**3. Cross-Language Query**
-- **Input**: `"北京现在的天气"` (Chinese question)
-- **Output Language**: `English` 🇺🇸
-- **Optimize**: `ON` ✅
-- **Output**: Beijing weather info (**answered in English**)
-
-**4. International Collaboration**
-- **Input**: `"What's the weather in Beijing?"` (English question)
-- **Output Language**: `中文` 🇨🇳
-- **Output**: Beijing weather info (**answered in Chinese**)
-
-**5. GPS Coordinate Search**
-- **Input**: `"What's the weather at coordinates 40.00023, 116.27808?"`
-- **Optimize**: `ON` ✅
-- **Auto-conversion**: Coordinates → "Beijing, Haidian District"
-- **Optimized Query**: `"timeanddate Beijing Haidian"`
-- **Output**: Real-time weather and time for Haidian District, Beijing
-
-**6. Pure LLM Mode (No Search)**
-- **Settings**: `enable_web_search = OFF`
-- **Input**: `"Explain quantum computing"`
-- **Output**: Direct LLM response without web search (faster, no internet required)
-
 ## 🔍 Why Only DuckDuckGo?
 
 This node uses **real web scraping** for search, not API calls. In our testing:
@@ -329,7 +268,7 @@ If local resources are limited, consider these nearly-free options:
 |----------|-------|-------|
 | **DeepSeek** | $0.14/million tokens | Official API, best value |
 | **SiliconFlow** | Free tier available | China-friendly |
-| **Groq** | Free tier available | Extremely fast |
+| **Grok** | Free tier available | Extremely fast |
 
 ---
 
