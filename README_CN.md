@@ -153,9 +153,9 @@ pip install -r requirements.txt
 
 | 截图 | 场景说明 |
 |------|----------|
-| ![天气到画面流程](images/ScreenShot_2025-11-26_031749_809.png) | **实时天气 → Prompt → 生图**：T2T 模式查询“北京现在的天气”，DuckDuckGo + Open-Meteo 获取数据，再把总结结果喂给后续的生图链路。 |
-| ![TI2T 地标侦探](images/ScreenShot_2025-11-26_184426_283.png) | **TI2T 地标侦探**：上传埃菲尔铁塔照片，由 GPT‑5.1 VLM 生成英文搜索词，抓取巴黎当前天气/时间，并用中文作答。 |
-| ![纯 LLM 研究模式](images/ScreenShot_2025-11-26_023515_251.png) | **纯 LLM 研究模式**：关闭联网搜索，设置“物理教授”角色，由 GPT‑5.1 直接输出长篇解释，适合无网络延迟的深度问答。 |
+| ![TI2T 地标侦探](images/ScreenShot_2025-11-26_031749_809.png) | **TI2T + 联网**：上传埃菲尔铁塔照片，提示“这里是什么地方？告诉我这个地方现在的时间和天气”，VLM 生成 `current local time weather Eiffel Tower Paris France`，DuckDuckGo 获取权威站点并输出中文天气。 |
+| ![TI2T 卡通识别](images/ScreenShot_2025-11-26_023515_251.png) | **TI2T + 纯视觉**：上传皮卡丘图片，提问“这个东西是什么？”，在关闭 Web Search 的情况下由 VLM 直接描述颜色、特征、作品来源。 |
+| ![T2T 坐标天气](images/ScreenShot_2025-11-26_184426_283.png) | **T2T + 坐标查询**：纯文本输入“Please help me find the current time and weather for coordinates 40.000236...”，开启 Web Search 后抓取海淀区实时天气并输出中文摘要。 |
 
 > 建议根据需要切换 Settings（模式、语言、代理）与不同 Provider，快速复刻或录制自己的演示流程。
 

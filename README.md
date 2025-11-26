@@ -153,9 +153,9 @@ Then restart ComfyUI.
 
 | Screenshot | Scenario |
 |------------|----------|
-| ![Weather-to-Image workflow](images/ScreenShot_2025-11-26_031749_809.png) | **Weather → Prompt → Image**: T2T mode fetches Beijing’s live weather via DuckDuckGo + Open-Meteo, then hands the summarized scene to a downstream text-to-image graph. |
-| ![TI2T landmark detective](images/ScreenShot_2025-11-26_184426_283.png) | **TI2T Landmark Detective**: upload an Eiffel Tower photo, let GPT‑5.1 VLM generate search keywords, crawl trusted weather/time sources, and answer in Chinese. |
-| ![Pure LLM research mode](images/ScreenShot_2025-11-26_023515_251.png) | **Pure LLM Research Mode**: disable web search, apply a custom “Physics Professor” role, and let GPT‑5.1 respond directly for deep dives without network latency. |
+| ![TI2T Landmark + Weather](images/ScreenShot_2025-11-26_031749_809.png) | **TI2T · Eiffel Tower + Web Search**: upload an Eiffel Tower photo, let GPT‑5.1 VLM generate `current local time weather Eiffel Tower Paris France`, run DuckDuckGo, and answer “这里是巴黎埃菲尔铁塔 … 当前温度 …”. |
+| ![TI2T Object ID](images/ScreenShot_2025-11-26_023515_251.png) | **TI2T · Cartoon Recognition**: feed a Pikachu image with prompt “这个东西是什么？”，VLM 模型在 `Web Search OFF` 下直接描述颜色、特征与动画背景。 |
+| ![T2T Coordinates Weather](images/ScreenShot_2025-11-26_184426_283.png) | **T2T · GPS Weather Lookup**: text prompt “Please help me find the current time and weather for coordinates 40.00023661635351, 116.27808154448789...”，启用 web search 获取海淀区实时天气并输出中文摘要。 |
 
 > Tip: mix and match Settings (mode, language, proxy) with different providers to recreate these flows or capture your own demos.
 
