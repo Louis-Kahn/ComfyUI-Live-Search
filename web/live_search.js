@@ -76,7 +76,13 @@ const API_LOADER_MODEL_CONFIGS = {
             "gemini-1.5-flash",
             "gemini-1.5-flash-8b"
         ],
-        "ti2t_models": []
+        "ti2t_models": [
+            "gemini-2.5-flash",
+            "gemini-2.5-flash-lite",
+            "gemini-2.0-flash",
+            "gemini-2.0-flash-lite",
+            "gemini-2.0-flash-live"
+        ]
     },
     "Anthropic (Claude)": {
         "t2t_models": [
@@ -123,7 +129,12 @@ const API_LOADER_MODEL_CONFIGS = {
             "qwen-max",
             "qwen-turbo"
         ],
-        "ti2t_models": []
+        "ti2t_models": [
+            "qwen3-vl-flash",
+            "qwen3-vl-flash-2025-10-15",
+            "qwen3-vl-plus",
+            "qwen3-vl-plus-2025-09-23"
+        ]
     },
     "SiliconFlow (硅基流动)": {
         "t2t_models": [
