@@ -332,11 +332,10 @@ class LLMClient:
         elif "Aliyun" in provider or provider in ["DeepSeek (Aliyun)", "Qwen (Aliyun)"]:
             # DashScope compatible mode uses Bearer token (OpenAI format)
             headers["Authorization"] = f"Bearer {api_key}"
-        # Gemini (OpenAI-Format) - API key should be in query parameter, not header
+        # Gemini (OpenAI-Format) - uses standard Authorization header
         elif "Gemini" in provider:
-            # Gemini's OpenAI-compatible endpoint uses ?key= query parameter
-            # Don't add Authorization header for Gemini
-            url = f"{url}?key={api_key}"
+            # Gemini's OpenAI-compatible endpoint uses standard Bearer token
+            headers["Authorization"] = f"Bearer {api_key}"
         # Ollama (Local) - usually no auth needed, but some setups use it
         elif "Ollama" in provider:
             # Ollama typically doesn't need auth, but if API key is provided, use it
@@ -443,6 +442,11 @@ class LiveSearch_Agent:
     
     # 模式分组：TI2T 需要图片输入；Dual 表示模型原生支持多模态但可向下兼容文本
     TI2T_MODELS = {
+        "智谱AI": {
+            "glm-4.6V-Flash",
+            "glm-4V-Flash",
+            "glm-4.1V-Thinking-Flash"
+        },
         "OpenAI": {
             # OpenAI 视觉模型（使用 OpenAI 兼容格式，与 SiliconFlow 相同）
             "gpt-5.1",
@@ -453,6 +457,12 @@ class LiveSearch_Agent:
             "gpt-4o",
             "gpt-4o-mini",
             "gpt-4-turbo"
+        },
+        "Qwen (Aliyun)": {
+            "qwen3-vl-flash",
+            "qwen3-vl-flash-2025-10-15",
+            "qwen3-vl-plus",
+            "qwen3-vl-plus-2025-09-23"
         },
         "SiliconFlow (硅基流动)": {
             # DeepSeek VLM 系列
@@ -485,8 +495,17 @@ class LiveSearch_Agent:
             "THUDM/GLM-4.1V-9B-Thinking"
         },
         "Ollama (Local)": {
+            "huihui_ai/qwen3-vl-abliterated:8b-instruct",
+            "huihui_ai/qwen3-vl-abliterated:4b-instruct",
             "llama3.2-vision",
             "llava"
+        },
+        "Gemini (OpenAI-Format)": {
+            "gemini-2.5-flash",
+            "gemini-2.5-flash-lite",
+            "gemini-2.0-flash",
+            "gemini-2.0-flash-lite",
+            "gemini-2.0-flash-live"
         },
         "Custom": {
             "custom-vlm-model"
@@ -890,10 +909,7 @@ Rules:
 6. Do not answer the question yet."""
                 
                 query_gen_content = [
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": f"data:image/png;base64,{image_b64}", "detail": "auto"}
-                    },
+                    self._build_image_content(image_b64, provider, model),
                     {"type": "text", "text": f"User Question: {prompt}{location_hint}\nGenerate a search query:"}
                 ]
                 
@@ -996,10 +1012,7 @@ Rules:
                  final_system_prompt = f"{role}\n\nSystem Rules:\n1. {language_instruction}\n2. Use provided search results and image."
 
             final_user_content = [
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:image/png;base64,{image_b64}", "detail": "auto"}
-                },
+                self._build_image_content(image_b64, provider, model),
                 {"type": "text", "text": f"User Question: {prompt} {lang_suffix}\n\nSearch Results:\n{full_context}"}
             ]
             
@@ -1024,10 +1037,7 @@ Rules:
                 system_prompt = f"{role}\n\nSystem Rules:\n1. {language_instruction}"
 
             user_content = [
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:image/png;base64,{image_b64}", "detail": "auto"}
-                },
+                self._build_image_content(image_b64, provider, model),
                 {"type": "text", "text": prompt} if prompt.strip() else {"type": "text", "text": "Describe this image."}
             ]
             
@@ -1080,6 +1090,32 @@ Rules:
         except Exception as e:
             print(f"[LiveSearch] Failed to encode image for TI2T: {e}")
             return None
+    
+    @staticmethod
+    def _build_image_content(image_b64, provider, model):
+        """
+        Build image content for different providers
+        Returns the appropriate image_url format based on provider
+        """
+        base64_url = f"data:image/png;base64,{image_b64}"
+        
+        # Check if model supports base64 (GLM-4V-Flash does not support base64)
+        if "智谱AI" in provider or "Zhipu" in provider:
+            # GLM-4V-Flash does not support base64 encoding
+            if "glm-4v-flash" in model.lower():
+                print(f"[LiveSearch] Warning: {model} does not support base64 encoding. Image upload may fail.")
+            
+            # Zhipu AI format: no 'detail' parameter
+            return {
+                "type": "image_url",
+                "image_url": {"url": base64_url}
+            }
+        
+        # OpenAI format (includes 'detail' parameter)
+        return {
+            "type": "image_url",
+            "image_url": {"url": base64_url, "detail": "auto"}
+        }
     
     @classmethod
     def _is_ti2t_model(cls, provider, model):
